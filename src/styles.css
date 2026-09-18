@@ -191,5 +191,5 @@ html.is-page-loading,html.is-page-loading body{overflow:hidden}
 @media(prefers-reduced-motion:reduce){.page-loader,.page-loader.is-done{transition:none}.page-loader-track i{animation:none;transform:translateX(0)}}
 
 /* Keep the architect portrait slightly lighter in the composition. */
-.architect-photo{width:92%;height:clamp(400px,47vw,635px)}
-@media(max-width:650px){.architect-photo{width:94%;height:350px}}
+.architect-photo{width:82%;height:clamp(340px,40vw,540px)}
+@media(max-width:650px){.architect-photo{width:88%;height:300px}}
