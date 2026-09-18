@@ -80,24 +80,39 @@ export const LiftEngine = forwardRef<LiftTextHandle, LiftTextProps & { mode: 'li
       const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
       const originalWidth = element.style.width;
       const originalMinHeight = element.style.minHeight;
+      const originalHeight = element.style.height;
       const originalVisibility = element.style.visibility;
       const originalOpacity = element.style.opacity;
+      let splitLayout: { width: string; height: string } | null = null;
+      let lockedLayout: { width: string; height: string } | null = null;
       // Keep interactive descendants usable. Splitting them would clone their DOM.
       const hasInteractiveContent = !!element.querySelector('a,button,input,select,textarea,[tabindex]');
       const restoreLayout = () => {
         element.style.width = originalWidth;
         element.style.minHeight = originalMinHeight;
+        element.style.height = originalHeight;
       };
       const clearSplit = () => {
         tween?.kill();
         tween = null;
         splitInstance?.revert();
         splitInstance = null;
+        splitLayout = null;
+        lockedLayout = null;
         restoreLayout();
       };
       const finish = () => {
+        // SplitText uses block line wrappers while the lift is running. Keep
+        // the exact outer box when those wrappers are removed, otherwise a
+        // line can reflow for one frame and move the content below it.
+        const finalLayout = splitLayout;
         clearSplit();
         state = 'finished';
+        if (finalLayout) {
+          lockedLayout = finalLayout;
+          element.style.width = finalLayout.width;
+          element.style.height = finalLayout.height;
+        }
         gsap.set(element, { autoAlpha: 1 });
       };
       const prepare = () => {
@@ -127,6 +142,7 @@ export const LiftEngine = forwardRef<LiftTextHandle, LiftTextProps & { mode: 'li
             : computedStyle.width,
           height: computedStyle.height === 'auto' ? `${element.offsetHeight}px` : computedStyle.height,
         };
+        splitLayout = stableBounds;
 
         // This must happen before SplitText mutates the contents. In flex/grid
         // layouts the generated line wrappers have different intrinsic sizing
@@ -330,10 +346,19 @@ export const LiftEngine = forwardRef<LiftTextHandle, LiftTextProps & { mode: 'li
           }
         });
       };
+      const releaseLayoutLock = () => {
+        if (!lockedLayout) return;
+        lockedLayout = null;
+        restoreLayout();
+      };
+      const onResize = () => {
+        releaseLayoutLock();
+        rebuild();
+      };
       const onMotionChange = () => { if (motion.matches) act('finish'); };
       motion.addEventListener('change', onMotionChange);
       const fontSet = document.fonts;
-      fontSet?.addEventListener('loadingdone', rebuild);
+      fontSet?.addEventListener('loadingdone', onResize);
       gsap.set(element, { autoAlpha: motion.matches ? 1 : 0 });
 
       const activate = () => {
@@ -351,12 +376,12 @@ export const LiftEngine = forwardRef<LiftTextHandle, LiftTextProps & { mode: 'li
               widths.set(entry.target, width);
               if (previous !== undefined && Math.abs(width - previous) > 0.5) changed = true;
             }
-            if (changed) rebuild();
+            if (changed) onResize();
           });
           resizeObserver.observe(element);
           if (element.parentElement) resizeObserver.observe(element.parentElement);
         }
-        window.addEventListener('resize', rebuild);
+        window.addEventListener('resize', onResize);
         if (trigger === 'scroll' && typeof IntersectionObserver !== 'undefined') {
           // rootMargin percentages are relative to WIDTH; use vh for the requested
           // viewport-height trigger by calculating the pixel inset explicitly.
@@ -393,10 +418,10 @@ export const LiftEngine = forwardRef<LiftTextHandle, LiftTextProps & { mode: 'li
         cancelAnimationFrame(resizeFrame);
         resizeObserver?.disconnect();
         scrollObserver?.disconnect();
-        window.removeEventListener('resize', rebuild);
+        window.removeEventListener('resize', onResize);
         window.removeEventListener('resize', refreshScroll);
         motion.removeEventListener('change', onMotionChange);
-        fontSet?.removeEventListener('loadingdone', rebuild);
+        fontSet?.removeEventListener('loadingdone', onResize);
         clearSplit();
         element.style.visibility = originalVisibility;
         element.style.opacity = originalOpacity;
