@@ -1,6 +1,7 @@
 import { useLayoutEffect, useMemo, useRef } from 'react'
 import * as THREE from 'three'
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
+import { theme3DColor } from './theme3d'
 
 // Compile static model parts by material once. The resulting scene has tens,
 // rather than hundreds, of separate draw calls. Moving parts remain independent.
@@ -59,5 +60,5 @@ export function Limb({points,radii,color,segments=18,sides=16}){
 }
 export function Stroke({points,color='#514438',radius=.006}){
  const geometry=useMemo(()=>new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(...p))),Math.max(8,points.length*5),radius,6,false),[points,radius])
- return <mesh geometry={geometry}><meshStandardMaterial color={color} roughness={.9}/></mesh>
+ return <mesh geometry={geometry}><meshStandardMaterial color={theme3DColor(color)} roughness={.9}/></mesh>
 }

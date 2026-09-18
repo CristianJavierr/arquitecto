@@ -1,0 +1,18 @@
+.masked-lift-line {
+  display: block;
+  overflow: visible;
+  user-select: text;
+  -webkit-user-select: text;
+}
+.masked-lift-word,
+.masked-lift-char {
+  display: inline-block;
+}
+
+.masked-lift-line-mask {
+  display: block;
+  /* Expand only the clipping region. Padding/negative block margins can
+     collapse between lines and change the height during the animation. */
+  overflow: visible !important;
+  clip-path: inset(calc(-1 * (var(--masked-lift-padding, 0.22em) + var(--masked-lift-ink-top, 0px))) -100vw calc(-1 * (var(--masked-lift-padding, 0.22em) + var(--masked-lift-ink-bottom, 0px))));
+}

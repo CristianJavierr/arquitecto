@@ -2,42 +2,45 @@ import { useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { ease } from './journey'
+import { theme3DColor } from './theme3d'
 function makePlan(){
  const segments=[]
  const line=(a,b)=>segments.push([a,b])
  const rect=(x,z,w,d)=>{line([x,z],[x+w,z]);line([x+w,z],[x+w,z+d]);line([x+w,z+d],[x,z+d]);line([x,z+d],[x,z])}
  const arc=(x,z,r,a,b)=>{for(let i=0;i<18;i++){const t=a+(b-a)*i/18,n=a+(b-a)*(i+1)/18;line([x+Math.cos(t)*r,z+Math.sin(t)*r],[x+Math.cos(n)*r,z+Math.sin(n)*r])}}
- // Site and perimeter; every wall belongs to the ground floor above it.
- rect(-1.96,-1.38,3.92,2.83);rect(-1.7,-1.05,3.4,2.1);rect(-1.64,-.99,3.28,1.98)
- rect(-1.42,-.83,2.86,1.47);rect(-1.38,-.79,2.78,1.39)
- // Partitions and their parallel wall faces.
- line([-.38,-.78],[-.38,-.17]);line([-.34,-.78],[-.34,-.17]);line([-.38,.17],[-.38,.61]);line([-.34,.17],[-.34,.61])
- line([.57,-.79],[.57,-.16]);line([.61,-.79],[.61,-.16]);line([.62,-.14],[1.4,-.14]);line([.62,-.10],[1.4,-.10])
- line([-.38,-.20],[.57,-.20]);line([-.38,-.16],[.57,-.16])
- // Window tracks, openings and facade fins.
- for(let i=0;i<9;i++){const x=-1.38+i*.31;line([x,.605],[x,.66])}
- line([-1.4,.66],[1.42,.66]);line([-1.4,.69],[1.42,.69])
- for(let i=0;i<11;i++)rect(-.73+i*.045,.615,.021,.095)
- // Door leaves and arcs.
- line([-.38,-.17],[-.10,-.17]);arc(-.38,-.17,.28,0,Math.PI/2)
- line([.62,-.10],[.62,.19]);arc(.62,-.10,.29,0,Math.PI/2)
- // Stairwell: tread and riser detail.
- rect(.7,-.74,.57,.48);for(let i=0;i<9;i++)line([.7,-.72+i*.05],[1.27,-.72+i*.05]);line([.985,-.70],[.985,-.32]);line([.945,-.36],[.985,-.32]);line([1.025,-.36],[.985,-.32])
- // Living room, kitchen, dining and bed.
- rect(-1.2,-.52,.58,.27);rect(-1.16,-.49,.51,.17);rect(-1.15,-.13,.45,.20)
- rect(.78,.05,.40,.32);for(const x of [.7,1.2]){rect(x,.07,.06,.1);rect(x,.24,.06,.1)}
- rect(-.20,-.68,.58,.29);rect(-.17,-.65,.25,.08);rect(.1,-.65,.25,.08)
- rect(.01,.11,.37,.28);arc(.07,.19,.035,0,Math.PI*2);arc(.3,.30,.035,0,Math.PI*2)
- // Front stairs and pool, matching the 3D base.
- for(let i=0;i<4;i++)rect(-.2-i*.04,.85+i*.12,1.35,.12)
- rect(-1.47,.85,1.65,.58);rect(-1.42,.90,1.55,.48)
+ // Casa Umbral: foundation, service wing and glazed living pavilion.
+ rect(-1.96,-1.50,3.92,2.98);rect(-1.75,-1.03,3.5,2.10)
+ rect(-1.5375,-.77,3.145,1.64);rect(-1.475,-.71,3.02,1.50)
+ // Entry and service core match the left-hand 3D volume.
+ rect(-1.5375,-.77,1.09,1.64);line([-.475,.025],[-.475,.815]);line([-.447,.025],[-.447,.815])
+ rect(-1.465,-.79,.59,.04);for(let i=0;i<16;i++)line([-1.456+i*.0355,-.80],[-1.456+i*.0355,-.75])
+ line([-.86,-.74],[-.54,-.74]);arc(-.86,-.74,.32,0,Math.PI/2)
+ // Stair, kitchen, sofa, coffee table and dining table.
+ rect(-1.165,-.19,.49,.88);for(let i=0;i<8;i++)line([-1.165,-.14+i*.10],[-.675,-.14+i*.10])
+ line([-.92,-.1],[-.92,.59]);line([-.96,.53],[-.92,.59]);line([-.88,.53],[-.92,.59])
+ rect(-.435,.415,.29,.37)
+ rect(-.08,.31,.80,.34);rect(-.08,.615,.80,.075)
+ rect(-.015,.36,.325,.255);rect(.335,.36,.325,.255)
+ rect(.075,-.215,.39,.27);rect(.22,-.14,.10,.12)
+ arc(1.12,.30,.20,0,Math.PI*2);rect(.795,.205,.16,.19);rect(1.285,.205,.16,.19)
+ // Curtain wall tracks and mullions; glass wraps the east corner.
+ rect(-.41,-.791,1.93,.036);for(let i=0;i<=4;i++)rect(-.4175+i*1.93/4,-.80,.015,.055)
+ rect(1.565,-.73,.036,1.53);for(let i=0;i<=3;i++)rect(1.55,-.7375+i*.51,.055,.015)
+ // Upper cantilever is drawn with dashed projection lines.
+ for(let i=0;i<18;i++){line([-1.625+i*.132,-.76],[-1.565+i*.132,-.76]);line([-1.625+i*.132,.71],[-1.565+i*.132,.71])}
+ for(let i=0;i<11;i++){line([.745,-.75+i*.132],[.745,-.69+i*.132]);line([-1.625,-.75+i*.132],[-1.625,-.69+i*.132])}
+ // Entry pavers, pool and garden align with the last construction block.
+ rect(-.54,-1.51,2.04,.45);rect(-.49,-1.46,1.94,.35)
+ for(let i=0;i<3;i++)rect(-1.445,-1.50+i*.15,.79,.14)
+ rect(-1.79,1.11,3.58,.32);rect(-2.015,-.805,.23,1.95);rect(1.785,-.805,.23,1.95)
+ for(const [x,z] of [[-1.79,1.13],[1.8,1.15]]){arc(x,z,.14,0,Math.PI*2);arc(x,z,.08,0,Math.PI*2)}
  // Dimension chains and extension ticks.
- for(const z of [-1.20,1.56]){line([-1.75,z],[1.75,z]);for(const x of [-1.7,-.38,.61,1.7]){line([x,z-.06],[x,z+.06]);line([x-.025,z-.025],[x+.025,z+.025])}}
- for(const x of [-1.84,1.84]){line([x,-1.08],[x,1.1]);for(const z of [-1.05,0,1.05]){line([x-.06,z],[x+.06,z]);line([x-.025,z-.025],[x+.025,z+.025])}}
+ for(const z of [-.94,1.0]){line([-1.61,z],[1.65,z]);for(const x of [-1.5375,-.447,1.6075]){line([x,z-.045],[x,z+.045]);line([x-.025,z-.025],[x+.025,z+.025])}}
+ for(const x of [-1.68,1.72]){line([x,-.84],[x,.92]);for(const z of [-.77,.035,.87]){line([x-.045,z],[x+.045,z]);line([x-.025,z-.025],[x+.025,z+.025])}}
  return new Float32Array(segments.flatMap(([a,b])=>[a[0],.007,a[1],b[0],.007,b[1]]))
 }
 export default function Blueprint({progress,reduced}){
- const {geometry,material,source}=useMemo(()=>{const source=makePlan(),geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.BufferAttribute(source.slice(),3).setUsage(THREE.DynamicDrawUsage));geometry.setDrawRange(0,0);return{source,geometry,material:new THREE.LineBasicMaterial({color:'#69452e',transparent:true,opacity:1,depthWrite:false})}},[])
+ const {geometry,material,source}=useMemo(()=>{const source=makePlan(),geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.BufferAttribute(source.slice(),3).setUsage(THREE.DynamicDrawUsage));geometry.setDrawRange(0,0);return{source,geometry,material:new THREE.LineBasicMaterial({color:theme3DColor('#69452e'),transparent:true,opacity:1,depthWrite:false})}},[])
  useFrame(()=>{
   const p=progress.current,draw=reduced?1:ease(.15,.365,p),num=source.length/6,position=geometry.attributes.position,k=draw*num,whole=Math.floor(k)
   position.array.set(source)
