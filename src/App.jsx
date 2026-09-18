@@ -17,7 +17,7 @@ export default function App(){
  const [chapter,setChapter]=useState(0),[reduced,setReduced]=useState(false),[sceneReady,setSceneReady]=useState(false),[assetsReady,setAssetsReady]=useState(false),[pageReady,setPageReady]=useState(false)
  const handleSceneReady=useCallback(()=>setSceneReady(true),[]),handleSceneError=useCallback(()=>setSceneReady(true),[])
  useEffect(()=>{const m=matchMedia('(prefers-reduced-motion: reduce)');const change=()=>setReduced(m.matches);change();m.addEventListener('change',change);return()=>m.removeEventListener('change',change)},[])
- useEffect(()=>{let cancelled=false;const assets=Promise.all([document.fonts?.ready??Promise.resolve(),...['/images/juan-nadal.jpg',...projects.map(item=>item.image)].map(waitForImage)]);const minimum=new Promise(resolve=>setTimeout(resolve,850));Promise.all([assets,minimum]).then(()=>{if(!cancelled)setAssetsReady(true)});return()=>{cancelled=true}},[])
+ useEffect(()=>{let cancelled=false;const assets=Promise.all([document.fonts?.ready??Promise.resolve(),...['/images/juan-nadal.webp',...projects.map(item=>item.image)].map(waitForImage)]);const minimum=new Promise(resolve=>setTimeout(resolve,850));Promise.all([assets,minimum]).then(()=>{if(!cancelled)setAssetsReady(true)});return()=>{cancelled=true}},[])
  useEffect(()=>{if(!sceneReady||!assetsReady)return;const frame=requestAnimationFrame(()=>setPageReady(true));return()=>cancelAnimationFrame(frame)},[sceneReady,assetsReady])
  useEffect(()=>{document.documentElement.classList.toggle('is-page-loading',!pageReady);return()=>document.documentElement.classList.remove('is-page-loading')},[pageReady])
  // Scroll events only update a target. A single time-based animation clock drives
@@ -66,7 +66,7 @@ export default function App(){
    </section>
    <section className="architect-section" id="arquitecto" aria-labelledby="architect-title">
     <div className="architect-intro">
-     <div className="architect-photo"><img src="/images/juan-nadal.jpg" alt="Arq. Juan Nadal en su estudio"/><span className="architect-photo-label">ARQ. JUAN NADAL / EL ESTUDIO</span></div>
+     <div className="architect-photo"><img src="/images/juan-nadal.webp" alt="Arq. Juan Nadal en su estudio"/><span className="architect-photo-label">ARQ. JUAN NADAL / EL ESTUDIO</span></div>
      <div className="architect-copy"><span className="eyebrow">EL ARQUITECTO</span><MaskedLiftText as="h2" id="architect-title" trigger="scroll" delay={.08} duration={1.05} stagger={.1}>Juan&nbsp;Nadal.</MaskedLiftText><MaskedLiftText as="p" trigger="scroll" delay={.2} duration={.95} stagger={.08}>Arq. Juan Nadal trabaja entre la precisión del plano y la vida cotidiana. Su arquitectura empieza observando cómo entra la luz, cómo se recorre una habitación y qué lugar termina haciendo suyo cada persona.</MaskedLiftText><MaskedLiftText as="p" className="architect-note" trigger="scroll" delay={.32} duration={.85} stagger={.08}>Una práctica independiente de arquitectura, paisaje e interiores.</MaskedLiftText><div className="architect-facts"><span>FORMA / 2011</span><span>SANTO DOMINGO · MADRID</span></div></div>
     </div>
     <section className="project-slider" id="proyectos" aria-labelledby="projects-title">
