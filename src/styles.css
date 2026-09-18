@@ -192,4 +192,9 @@ html.is-page-loading,html.is-page-loading body{overflow:hidden}
 
 /* Keep the architect portrait slightly lighter in the composition. */
 .architect-photo{width:min(100%,420px);height:auto;aspect-ratio:1.06/1;justify-self:start}
-@media(max-width:650px){.architect-photo{width:82%;height:auto;aspect-ratio:1/1.05}}
+.architect-intro{grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:clamp(48px,6vw,100px);align-items:start}
+.architect-copy{max-width:650px;padding-top:clamp(18px,3vw,46px)}
+.architect-copy h2{font-size:clamp(50px,5.5vw,86px);letter-spacing:-4px;line-height:.95;margin:18px 0 29px}
+.architect-copy p{font-size:clamp(16px,1.3vw,19px);line-height:1.65}
+.architect-copy .architect-note{font-size:12px;margin-top:30px}
+@media(max-width:650px){.architect-photo{width:82%;height:auto;aspect-ratio:1/1.05}.architect-copy{max-width:none;padding-top:0}.architect-copy h2{font-size:68px;letter-spacing:-4px;margin:18px 0 27px}.architect-copy p{font-size:14px;line-height:1.7}.architect-copy .architect-note{font-size:12px}}
