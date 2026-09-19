@@ -146,11 +146,11 @@ html,body,#root{background:#fff;color:var(--ink)}
 .project-card:hover .project-card-media img{transform:scale(1.045)}
 .project-card-media>span{position:absolute;top:15px;left:15px;display:grid;place-items:center;width:31px;height:25px;border-radius:999px;background:#ffffffd9;color:#285c75;font-size:9px;letter-spacing:1px}
 .project-card-copy{padding:18px 1px 0}
-.project-card-title{display:flex;align-items:baseline;justify-content:space-between;gap:15px}
+.project-card-title{display:flex;align-items:baseline;justify-content:space-between;gap:15px;min-height:27px}
 .project-card-title h3{font-family:Manrope,sans-serif;font-size:20px;font-weight:500;letter-spacing:-.8px;margin:0}
-.project-card-title span{font-size:9px;color:#547487;white-space:nowrap}
+.project-card-title>span{font-size:9px;color:#547487;white-space:nowrap}
 .project-card-copy p{font-size:12px;line-height:1.55;color:#547080;margin:10px 0 13px;max-width:330px}
-.project-card-copy small{font-size:9px;letter-spacing:1.3px;color:#6a8795;text-transform:uppercase}
+.project-card-copy small{display:block;min-height:12px;font-size:9px;letter-spacing:1.3px;color:#6a8795;text-transform:uppercase}
 .project-slider-count{color:#547487}
 .architect-copy>.eyebrow,.project-slider-heading .eyebrow,.contact-heading .eyebrow,footer>.eyebrow{color:var(--clay)}
 .architect-facts,.contact-meta{color:#547487}
@@ -171,8 +171,8 @@ html,body,#root{background:#fff;color:var(--ink)}
  .project-card-grid::-webkit-scrollbar{display:none}
  .project-card{flex:0 0 82%;scroll-snap-align:start}
  .project-card-media{aspect-ratio:1/1.05}
- .project-card-title{display:block}
- .project-card-title span{display:block;margin-top:6px}
+ .project-card-title{display:block;min-height:45px}
+ .project-card-title>span{display:block;margin-top:6px}
  .project-card-copy p{font-size:12px}
 }
 
